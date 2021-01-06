@@ -1,77 +1,105 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useDispatch } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { registerUser } from '../../../_actions/user_action';
+import { useFormik } from 'formik';
+import * as yup from 'yup';
 
 function RegisterPage(props) {
     const dispatch = useDispatch();
 
-    const [Email, setEmail] = useState('')
-    const [Name, setName] = useState('')
-    const [Password, setPassword] = useState('')
-    const [ConfirmPassword, setConfirmPassword] = useState('')
+    const formik = useFormik({
+        initialValues: {
+            email: '',
+            name: '',
+            password: '',
+            confirmPassword: '',
+        },
+        validationSchema: yup.object().shape({
+            email: yup.string()
+                .email('Email is invalid')
+                .required('Email is required'),
+            name: yup.string()
+                .required('Name is required'),
+            password: yup.string()
+                .min(6, 'Password must be at least 6 characters')
+                .required('Password is required'),
+            confirmPassword: yup.string()
+                .oneOf([yup.ref('password'), null], 'Passwords must match')
+                .required('Confirm Password is required'),
+        }),
+        onSubmit: (values, {setSubmitting}) => {
+            setTimeout(() => {
+                const {email, name, password} = values;
+                const body = {
+                    email,
+                    name,
+                    password,
+                };
 
-    const onEmailHandler = (event) => {
-        setEmail(event.currentTarget.value);
-    }
+                dispatch(registerUser(body)).then(response => {
+                        if (response.payload.success) {
+                            props.history.push('/login');
+                        } else {
+                            alert(response.payload.errmsg);
+                        }
+                    });
 
-    const onNameHandler = (event) => {
-        setName(event.currentTarget.value);
-    }
-
-    const onPasswordHandler = (event) => {
-        setPassword(event.currentTarget.value);
-    }
-
-    const onConfirmPasswordHandler = (event) => {
-        setConfirmPassword(event.currentTarget.value);
-    }
-
-    const onSubmitHandler = (event) => {
-        event.preventDefault();
-
-        if (Password !== ConfirmPassword) {
-            return alert('비밀번호와 비밀번호 확인은 같아야 합니다.')
+                setSubmitting(false);
+            }, 500);
         }
-
-        let body = {
-            email: Email,
-            name: Name,
-            password: Password,
-        }
-
-        dispatch(registerUser(body))
-            .then(response => {
-                if (response.payload.success) {
-                    props.history.push('/login')
-                } else {
-                    alert('Failed to sign up')
-                }
-            })
-    }
+    });
 
     return (
         <div style={{
             display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100vh'
         }}>
             <form style={{ display: 'flex', flexDirection: 'column'}}
-                onSubmit={onSubmitHandler}
+                onSubmit={formik.handleSubmit}
             >
                 <label>Email</label>
-                <input type="email" value={Email} onChange={onEmailHandler} />
+                <input
+                    type="email"
+                    name="email"
+                    value={formik.values.email}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                />
+                {formik.errors.email && formik.touched.email && formik.errors.email}
 
-                <label>Name</label>
-                <input type="text" value={Name} onChange={onNameHandler} />
+                <label>name</label>
+                <input
+                    type="text"
+                    name="name"
+                    value={formik.values.name}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                />
+                {formik.errors.name && formik.touched.name && formik.errors.name}
 
                 <label>Password</label>
-                <input type="password" value={Password} onChange={onPasswordHandler} />
+                <input
+                    type="password"
+                    name="password"
+                    value={formik.values.password}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                />
+                {formik.errors.password && formik.touched.password && formik.errors.password}
 
                 <label>Confirm Password</label>
-                <input type="password" value={ConfirmPassword} onChange={onConfirmPasswordHandler} />
+                <input
+                    type="password"
+                    name="confirmPassword"
+                    value={formik.values.confirmPassword}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                />
+                {formik.errors.confirmPassword && formik.touched.confirmPassword && formik.errors.confirmPassword}
 
 
                 <br/>
-                <button type="submit">
+                <button type="submit" disabled={formik.isSubmitting}>
                     회원 가입
                 </button>
             </form>

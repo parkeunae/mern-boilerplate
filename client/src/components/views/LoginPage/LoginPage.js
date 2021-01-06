@@ -2,52 +2,81 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { loginUser } from '../../../_actions/user_action';
 import { withRouter } from 'react-router-dom';
+import { useFormik } from 'formik';
+import * as yup from 'yup';
 
 function LoginPage(props) {
     const dispatch = useDispatch();
 
-    const [Email, setEmail] = useState('')
-    const [Password, setPassword] = useState('')
+    const [formErrorMessage, setFormErrorMessage] = useState('');
 
-    const onEmailHandler = (event) => {
-        setEmail(event.currentTarget.value);
-    }
+    const formik = useFormik({
+        initialValues: {
+            email: '',
+            password: '',
+        },
+        validationSchema: yup.object().shape({
+            email: yup.string()
+                .email('Email is invalid')
+                .required('Email is required'),
+            password: yup.string()
+                .min(6, 'Password must be at least 6 characters')
+                .required('Password is required'),
+        }),
+        onSubmit: (values, {setSubmitting}) => {
+            setTimeout(() => {
+                const body = {
+                    email: values.email,
+                    password: values.password,
+                };
 
-    const onPasswordHandler = (event) => {
-        setPassword(event.currentTarget.value);
-    }
+                dispatch(loginUser(body)).then(response => {
+                        if (response.payload.loginSuccess) {
+                            props.history.push('/')
+                        } else {
+                            setFormErrorMessage('Check out your Account or Password again');
+                        }
+                    })
+                    .catch(err => {
+                        setFormErrorMessage('Check out your Account or Password again');
+                        setTimeout(() => {
+                            setFormErrorMessage('');
+                        }, 3000);
+                    });
 
-    const onSubmitHandler = (event) => {
-        event.preventDefault();
-
-        let body = {
-            email: Email,
-            password: Password
+                setSubmitting(false);
+            }, 500);
         }
-
-        dispatch(loginUser(body))
-            .then(response => {
-                if (response.payload.loginSuccess) {
-                    props.history.push('/')
-                } else {
-                    alert('Error')
-                }
-            })
-    }
+    });
 
     return (
         <div style={{
             display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100vh'
         }}>
             <form style={{ display: 'flex', flexDirection: 'column'}}
-                onSubmit={onSubmitHandler}
+                onSubmit={formik.handleSubmit}
             >
                 <label>Email</label>
-                <input type="email" value={Email} onChange={onEmailHandler} />
+                <input
+                    type="email"
+                    name="email"
+                    value={formik.values.email}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                />
+                {formik.errors.email && formik.touched.email && formik.errors.email}
                 <label>Password</label>
-                <input type="password" value={Password} onChange={onPasswordHandler} />
+                <input
+                    type="password"
+                    name="password"
+                    value={formik.values.password}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                />
+                {formik.errors.password && formik.touched.password && formik.errors.password}
                 <br/>
-                <button type="submit">
+                {formErrorMessage && formErrorMessage}
+                <button type="submit" disabled={formik.isSubmitting}>
                     Login
                 </button>
             </form>
