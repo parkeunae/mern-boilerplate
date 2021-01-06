@@ -1,6 +1,5 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import { registerUser } from '../../../_actions/user_action';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -107,4 +106,4 @@ function RegisterPage(props) {
     )
 }
 
-export default withRouter(RegisterPage)
+export default RegisterPage

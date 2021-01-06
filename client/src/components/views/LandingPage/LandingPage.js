@@ -1,6 +1,5 @@
 import React from 'react';
 import axios from 'axios';
-import { withRouter } from 'react-router-dom';
 
 function LandingPage(props) {
     const onClickHandler = () => {
@@ -25,4 +24,4 @@ function LandingPage(props) {
     );
 }
 
-export default withRouter(LandingPage);
+export default LandingPage;
