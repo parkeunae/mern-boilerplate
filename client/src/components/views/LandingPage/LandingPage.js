@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { USER_SERVER } from '../../../utils/Config';
+import MainLayout from '../../layouts/MainLayout';
 
 function LandingPage(props) {
     const onClickHandler = () => {
@@ -15,13 +16,15 @@ function LandingPage(props) {
     }
 
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100vh' }}>
-            <h1>시작 페이지</h1>
+        <MainLayout>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100vh' }}>
+                <h1>시작 페이지</h1>
 
-            <button onClick={onClickHandler}>
-                로그아웃
-            </button>
-        </div>
+                <button onClick={onClickHandler}>
+                    로그아웃
+                </button>
+            </div>
+        </MainLayout>
     );
 }
 
