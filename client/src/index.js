@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
 import { Provider } from 'react-redux';
 import 'antd/dist/antd.css';
 import { applyMiddleware, createStore } from 'redux';
 import promiseMiddleWare from 'redux-promise';
 import ReduxThunk from 'redux-thunk';
 import Reducer from './_reducers';
+import App from './App';
 
 // Object만 받는 Store가 Promise, Function도 받을 수 있도록 해주는 redux-promise, redux-thunk middleware 추가
 // createStore로 Redux에 Store 생성

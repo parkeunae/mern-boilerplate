@@ -1,9 +1,10 @@
 import React from 'react';
 import axios from 'axios';
+import { USER_SERVER } from '../../../utils/Config';
 
 function LandingPage(props) {
     const onClickHandler = () => {
-        axios.get('/api/users/logout')
+        axios.get(`${USER_SERVER}/logout`)
             .then(response => {
                 if (response.data.success) {
                     props.history.push('/login')
