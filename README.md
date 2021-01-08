@@ -18,6 +18,8 @@ John Ahn님의 [따라하며-배우는-노드-리액트-boiler-plate-만들기](
 1. sign up
 2. login
 3. logout
+4. navigation bar
+5. footer
 
 <br/>
 
@@ -28,3 +30,9 @@ John Ahn님의 [따라하며-배우는-노드-리액트-boiler-plate-만들기](
 * 처음부터 Redux를 직접 적용시켜 사용하기
 * Higher-order Component (HOC) 만들어보기
 * boilerplate를 만들어두어 효율성 up!
+
+<br/>
+
+## 개인적으로 추가한 것
+* eslint 적용 (airbnb)
+* navigation bar & footer -> layout 추가
