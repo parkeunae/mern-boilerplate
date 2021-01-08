@@ -1,8 +1,9 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
-import { registerUser } from '../../../_actions/user_action';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
+import { registerUser } from '../../../_actions/user_action';
 
 function RegisterPage(props) {
     const dispatch = useDispatch();
@@ -27,37 +28,43 @@ function RegisterPage(props) {
                 .oneOf([yup.ref('password'), null], 'Passwords must match')
                 .required('Confirm Password is required'),
         }),
-        onSubmit: (values, {setSubmitting}) => {
+        onSubmit: (values, { setSubmitting }) => {
             setTimeout(() => {
-                const {email, name, password} = values;
+                const { email, name, password } = values;
                 const body = {
                     email,
                     name,
                     password,
                 };
 
-                dispatch(registerUser(body)).then(response => {
-                        if (response.payload.success) {
-                            props.history.push('/login');
-                        } else {
-                            alert(response.payload.errmsg);
-                        }
-                    });
+                dispatch(registerUser(body)).then((response) => {
+                    if (response.payload.success) {
+                        props.history.push('/login');
+                    } else {
+                        alert(response.payload.errmsg);
+                    }
+                });
 
                 setSubmitting(false);
             }, 500);
-        }
+        },
     });
 
     return (
-        <div style={{
-            display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100vh'
-        }}>
-            <form style={{ display: 'flex', flexDirection: 'column'}}
+        <div
+            style={{
+                display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100vh',
+            }}
+        >
+            <form
+                style={{ display: 'flex', flexDirection: 'column' }}
                 onSubmit={formik.handleSubmit}
             >
-                <label>Email</label>
+                <label htmlFor="emailInput">
+                    Email
+                </label>
                 <input
+                    id="emailInput"
                     type="email"
                     name="email"
                     value={formik.values.email}
@@ -66,8 +73,11 @@ function RegisterPage(props) {
                 />
                 {formik.errors.email && formik.touched.email && formik.errors.email}
 
-                <label>name</label>
+                <label htmlFor="nameInput">
+                    name
+                </label>
                 <input
+                    id="nameInput"
                     type="text"
                     name="name"
                     value={formik.values.name}
@@ -76,8 +86,11 @@ function RegisterPage(props) {
                 />
                 {formik.errors.name && formik.touched.name && formik.errors.name}
 
-                <label>Password</label>
+                <label htmlFor="passwordInput">
+                    Password
+                </label>
                 <input
+                    id="passwordInput"
                     type="password"
                     name="password"
                     value={formik.values.password}
@@ -86,24 +99,33 @@ function RegisterPage(props) {
                 />
                 {formik.errors.password && formik.touched.password && formik.errors.password}
 
-                <label>Confirm Password</label>
+                <label htmlFor="confirmInput">
+                    Confirm Password
+                </label>
                 <input
+                    id="confirmInput"
                     type="password"
                     name="confirmPassword"
                     value={formik.values.confirmPassword}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                 />
-                {formik.errors.confirmPassword && formik.touched.confirmPassword && formik.errors.confirmPassword}
-
-
-                <br/>
+                {
+                    formik.errors.confirmPassword
+                    && formik.touched.confirmPassword
+                    && formik.errors.confirmPassword
+                }
+                <br />
                 <button type="submit" disabled={formik.isSubmitting}>
                     회원 가입
                 </button>
             </form>
         </div>
-    )
+    );
 }
 
-export default RegisterPage
+RegisterPage.propTypes = {
+    history: PropTypes.objectOf(PropTypes.object()).isRequired,
+};
+
+export default RegisterPage;

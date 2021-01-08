@@ -1,15 +1,21 @@
-import React from 'react'
+import React from 'react';
+import PropTypes from 'prop-types';
 import Footer from '../views/Footer/Footer';
 import NavBar from '../views/NavBar/NavBar';
 
 function MainLayout(props) {
+    const { children } = props;
     return (
         <div>
             <NavBar />
-                {props.children}
+            { children }
             <Footer />
         </div>
-    )
+    );
 }
 
-export default MainLayout
+MainLayout.propTypes = {
+    children: PropTypes.node.isRequired,
+};
+
+export default MainLayout;

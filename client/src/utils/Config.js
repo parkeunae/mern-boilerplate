@@ -1,2 +1,3 @@
-//SERVER ROUTES
-export const USER_SERVER = '/api/users';
+// SERVER ROUTES
+const USER_SERVER = '/api/users';
+export default USER_SERVER;
